@@ -30,7 +30,7 @@ function hideApiKeyPrompt() {
 
 
 function populateAccountDropdown() {
-  const apiUrl = 'https://sandbox.increase.com/accounts';
+  const apiUrl = 'https://api.increase.com/accounts';
 
   chrome.storage.local.get('apiKey', function(data) {
     const apiKey = data.apiKey;
@@ -60,7 +60,7 @@ function populateAccountDropdown() {
 
 
 function createNewAccountNumber() {
-  const apiUrl = 'https://sandbox.increase.com/account_numbers';
+  const apiUrl = 'https://api.increase.com/account_numbers';
   const accountSelect = document.getElementById('accountSelect');
   const selectedAccountId = accountSelect.options[accountSelect.selectedIndex].value;
   const accountNumberName = document.getElementById('accountNumberNameInput').value.trim();
@@ -93,7 +93,7 @@ function createNewAccountNumber() {
 
 
 function createNewCard() {
-  const apiUrl = 'https://sandbox.increase.com/cards';
+  const apiUrl = 'https://api.increase.com/cards';
   const accountSelect = document.getElementById('accountSelect');
   const selectedAccountId = accountSelect.options[accountSelect.selectedIndex].value;
   const cardDescription = document.getElementById('cardDescriptionInput').value.trim();
@@ -118,7 +118,7 @@ function createNewCard() {
         console.log('Card created:', data);
         const resultDiv = document.getElementById('card-result');
         resultDiv.innerHTML = 'Card number: ' + data.last4;
-        const apiUrl = `https://sandbox.increase.com/cards/${data.id}/details`;
+        const apiUrl = `https://api.increase.com/cards/${data.id}/details`;
         fetch(apiUrl, {
           method: 'GET',
           headers: {
