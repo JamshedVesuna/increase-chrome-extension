@@ -1,19 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
-  // Check if API key already exists
   chrome.storage.local.get('apiKey', function(data) {
     if (data.apiKey) {
-      // API key already exists, hide the input field and save button
-
-
-      document.getElementById('apiKeyInput').style.display = 'none';
-      document.getElementById('saveApiKeyButton').style.display = 'none';
+      hideApiKeyPrompt();
     }
   });
-  // Save API key when button is clicked
   document.getElementById('saveApiKeyButton').addEventListener('click', function() {
     var apiKey = document.getElementById('apiKeyInput').value;
     chrome.storage.local.set({apiKey: apiKey}, function() {
       console.log('API key saved');
+      hideApiKeyPrompt();
+      populateAccountDropdown();
     });
   });
 
@@ -22,6 +18,10 @@ document.addEventListener('DOMContentLoaded', function () {
   createAccountButton.addEventListener('click', createNewAccountNumber);
 });
 
+function hideApiKeyPrompt() {
+  document.getElementById('apiKeyInput').style.display = 'none';
+  document.getElementById('saveApiKeyButton').style.display = 'none';
+}
 
 
 function populateAccountDropdown() {
