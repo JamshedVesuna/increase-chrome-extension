@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Increase Account Number Generator",
+  "version": "1.0",
+  "description": "Generate new account numbers on Increase.com",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}
+
