@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Increase Account Number Generator",
+  "name": "Increase Account Number and Card Generator",
   "version": "1.0",
-  "description": "Generate new account numbers on Increase.com",
+  "description": "Generate new account numbers and cards with Increase.com",
   "action": {
     "default_popup": "popup.html"
   },
