@@ -1,39 +1,59 @@
 document.addEventListener('DOMContentLoaded', function () {
+  // Check if API key already exists
+  chrome.storage.local.get('apiKey', function(data) {
+    if (data.apiKey) {
+      // API key already exists, hide the input field and save button
+
+
+      document.getElementById('apiKeyInput').style.display = 'none';
+      document.getElementById('saveApiKeyButton').style.display = 'none';
+    }
+  });
+  // Save API key when button is clicked
+  document.getElementById('saveApiKeyButton').addEventListener('click', function() {
+    var apiKey = document.getElementById('apiKeyInput').value;
+    chrome.storage.local.set({apiKey: apiKey}, function() {
+      console.log('API key saved');
+    });
+  });
+
   populateAccountDropdown();
   const createAccountButton = document.getElementById('createAccountButton');
   createAccountButton.addEventListener('click', createNewAccountNumber);
 });
 
+
+
 function populateAccountDropdown() {
   const apiUrl = 'https://sandbox.increase.com/accounts';
-  const apiKey = '';
 
-  fetch(apiUrl, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    }
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data.data)
-      const select = document.getElementById('accountSelect');
-      data.data.forEach(account => {
-        const option = document.createElement('option');
-        option.value = account.id;
-        option.textContent = account.name;
-        select.appendChild(option);
-      });
+  chrome.storage.local.get('apiKey', function(data) {
+    const apiKey = data.apiKey;
+    fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      }
     })
-    .catch(error => {
-      console.error('Error fetching accounts:', error);
-    });
+      .then(response => response.json())
+      .then(data => {
+        const select = document.getElementById('accountSelect');
+        data.data.forEach(account => {
+          const option = document.createElement('option');
+          option.value = account.id;
+          option.textContent = account.name;
+          select.appendChild(option);
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching accounts:', error);
+      });
+
+  })
 }
 
 function createNewAccountNumber() {
-  const apiKey = '';
-
   const apiUrl = 'https://sandbox.increase.com/account_numbers';
 
   const accountSelect = document.getElementById('accountSelect');
@@ -44,34 +64,35 @@ function createNewAccountNumber() {
   const accountNumberNameToUse = accountNumberName || `AccountNumber ${today}`;
 
 
-  const headers = {
-    'Authorization': `Bearer ${apiKey}`,
-    'Content-Type': 'application/json',
-  };
-
   const requestBody = {
     'account_id': selectedAccountId,
     'name': accountNumberNameToUse
   };
 
-  console.log(headers)
-  console.log(JSON.stringify(requestBody))
-  fetch(apiUrl, {
-    method: 'POST',
-    headers: headers,
-    body: JSON.stringify(requestBody),
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log(data);
-
-      const resultDiv = document.getElementById('result');
-      resultDiv.innerHTML = 'Account number: ' + data.account_number + '<br>Routing number: ' + data.routing_number; // Replace with the actual response property name
-
+  chrome.storage.local.get('apiKey', function(data) {
+    const apiKey = data.apiKey;
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          'account_id': selectedAccountId,
+          'name': accountNumberNameToUse
+      }),
     })
-    .catch(error => {
-      console.error('Error:', error);
-      alert('Error creating account number. Please try again.');
-    });
+      .then(response => response.json())
+      .then(data => {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = 'Account number: ' + data.account_number + '<br>Routing number: ' + data.routing_number; // Replace with the actual response property name
+
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error creating account number. Please try again.');
+      });
+  })
+
 }
 
